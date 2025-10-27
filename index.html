@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookStore - Livraria Online</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid #667eea;
+      }
+
+      h1 {
+        color: #667eea;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .search-section {
+        margin-bottom: 30px;
+        display: flex;
+        gap: 10px;
+      }
+
+      #search-input {
+        flex: 1;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        transition: border-color 0.3s;
+      }
+
+      #search-input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      button {
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+
+      button:hover {
+        background: #5568d3;
+      }
+
+      .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+      }
+
+      .product-card {
+        border: 2px solid #eee;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: #fafafa;
+      }
+
+      .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      }
+
+      .product-card h3 {
+        color: #333;
+        margin: 15px 0 10px;
+        font-size: 1.2em;
+      }
+
+      .product-card .author {
+        color: #666;
+        font-style: italic;
+        margin-bottom: 10px;
+      }
+
+      .product-card .price {
+        color: #667eea;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 15px 0;
+      }
+
+      .product-card .stock {
+        color: #28a745;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+      }
+
+      .product-card .out-of-stock {
+        color: #dc3545;
+      }
+
+      .cart-section {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 30px;
+      }
+
+      .cart-section h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+      }
+
+      .cart-item {
+        background: white;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .cart-total {
+        text-align: right;
+        font-size: 1.5em;
+        color: #667eea;
+        font-weight: bold;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #ddd;
+      }
+
+      .login-section {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: bold;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+
+      .error-message {
+        color: #dc3545;
+        background: #f8d7da;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+        display: none;
+      }
+
+      .success-message {
+        color: #28a745;
+        background: #d4edda;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+        display: none;
+      }
+
+      .book-icon {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      .remove-btn {
+        background: #dc3545;
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+
+      .remove-btn:hover {
+        background: #c82333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>📚 BookStore - Livraria Online</h1>
+        <p>Encontre seus livros favoritos</p>
+      </header>
+
+      <div class="login-section" id="login-section">
+        <h2>Login</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="username">Usuário:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Digite seu usuário"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Senha:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Digite sua senha"
+            />
+          </div>
+          <button type="submit" id="login-btn">Entrar</button>
+          <div class="error-message" id="login-error"></div>
+          <div class="success-message" id="login-success"></div>
+        </form>
+        <p style="margin-top: 15px; color: #666; font-size: 0.9em">
+          Credenciais de teste: admin / senha123
+        </p>
+      </div>
+
+      <div id="main-content" style="display: none">
+        <div class="search-section">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Buscar livros por título ou autor..."
+          />
+          <button id="search-btn">🔍 Buscar</button>
+        </div>
+
+        <div class="products" id="products"></div>
+
+        <div class="cart-section">
+          <h2>🛒 Carrinho de Compras</h2>
+          <div id="cart-items"></div>
+          <div class="cart-total" id="cart-total">Total: R$ 0,00</div>
+          <button id="checkout-btn" style="margin-top: 20px; width: 100%">
+            Finalizar Compra
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const products = [
+        {
+          id: 1,
+          title: "Clean Code",
+          author: "Robert C. Martin",
+          price: 89.9,
+          stock: 5,
+          icon: "📘",
+        },
+        {
+          id: 2,
+          title: "JavaScript: The Good Parts",
+          author: "Douglas Crockford",
+          price: 65.5,
+          stock: 3,
+          icon: "📗",
+        },
+        {
+          id: 3,
+          title: "Design Patterns",
+          author: "Gang of Four",
+          price: 120.0,
+          stock: 0,
+          icon: "📕",
+        },
+        {
+          id: 4,
+          title: "Refactoring",
+          author: "Martin Fowler",
+          price: 95.0,
+          stock: 8,
+          icon: "📙",
+        },
+        {
+          id: 5,
+          title: "Test Driven Development",
+          author: "Kent Beck",
+          price: 78.9,
+          stock: 4,
+          icon: "📔",
+        },
+        {
+          id: 6,
+          title: "The Pragmatic Programmer",
+          author: "Andrew Hunt",
+          price: 105.0,
+          stock: 6,
+          icon: "📒",
+        },
+      ];
+
+      let cart = [];
+      let allProducts = [...products];
+
+      // Login
+      document.getElementById("login-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const errorMsg = document.getElementById("login-error");
+        const successMsg = document.getElementById("login-success");
+
+        errorMsg.style.display = "none";
+        successMsg.style.display = "none";
+
+        if (username === "admin" && password === "senha123") {
+          successMsg.textContent = "Login realizado com sucesso!";
+          successMsg.style.display = "block";
+          setTimeout(() => {
+            document.getElementById("login-section").style.display = "none";
+            document.getElementById("main-content").style.display = "block";
+            renderProducts(allProducts);
+          }, 1000);
+        } else {
+          errorMsg.textContent = "Usuário ou senha inválidos!";
+          errorMsg.style.display = "block";
+        }
+      });
+
+      // Renderizar produtos
+      function renderProducts(productsToRender) {
+        const productsContainer = document.getElementById("products");
+        productsContainer.innerHTML = "";
+
+        productsToRender.forEach((product) => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.setAttribute("data-product-id", product.id);
+
+          const stockText =
+            product.stock > 0
+              ? `<div class="stock">Em estoque: ${product.stock}</div>`
+              : '<div class="stock out-of-stock">Esgotado</div>';
+
+          const buttonText =
+            product.stock > 0
+              ? '<button class="add-to-cart">Adicionar ao Carrinho</button>'
+              : '<button disabled style="opacity: 0.5; cursor: not-allowed;">Indisponível</button>';
+
+          card.innerHTML = `
+                    <div class="book-icon">${product.icon}</div>
+                    <h3>${product.title}</h3>
+                    <div class="author">${product.author}</div>
+                    <div class="price">R$ ${product.price.toFixed(2)}</div>
+                    ${stockText}
+                    ${buttonText}
+                `;
+
+          if (product.stock > 0) {
+            card
+              .querySelector(".add-to-cart")
+              .addEventListener("click", () => addToCart(product));
+          }
+
+          productsContainer.appendChild(card);
+        });
+      }
+
+      // Adicionar ao carrinho
+      function addToCart(product) {
+        const existingItem = cart.find((item) => item.id === product.id);
+
+        if (existingItem) {
+          if (existingItem.quantity < product.stock) {
+            existingItem.quantity++;
+          } else {
+            alert("Quantidade máxima em estoque atingida!");
+            return;
+          }
+        } else {
+          cart.push({ ...product, quantity: 1 });
+        }
+
+        renderCart();
+      }
+
+      // Renderizar carrinho
+      function renderCart() {
+        const cartContainer = document.getElementById("cart-items");
+        const cartTotal = document.getElementById("cart-total");
+
+        if (cart.length === 0) {
+          cartContainer.innerHTML =
+            '<p style="text-align: center; color: #666;">Carrinho vazio</p>';
+          cartTotal.textContent = "Total: R$ 0,00";
+          return;
+        }
+
+        cartContainer.innerHTML = "";
+        let total = 0;
+
+        cart.forEach((item) => {
+          const cartItem = document.createElement("div");
+          cartItem.className = "cart-item";
+          cartItem.setAttribute("data-cart-item-id", item.id);
+
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+
+          cartItem.innerHTML = `
+                    <div>
+                        <strong>${item.title}</strong>
+                        <div style="color: #666; font-size: 0.9em;">Quantidade: ${
+                          item.quantity
+                        } x R$ ${item.price.toFixed(2)}</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <strong>R$ ${itemTotal.toFixed(2)}</strong>
+                        <button class="remove-btn" data-product-id="${
+                          item.id
+                        }">Remover</button>
+                    </div>
+                `;
+
+          cartItem
+            .querySelector(".remove-btn")
+            .addEventListener("click", () => removeFromCart(item.id));
+          cartContainer.appendChild(cartItem);
+        });
+
+        cartTotal.textContent = `Total: R$ ${total.toFixed(2)}`;
+      }
+
+      // Remover do carrinho
+      function removeFromCart(productId) {
+        cart = cart.filter((item) => item.id !== productId);
+        renderCart();
+      }
+
+      // Buscar produtos
+      document.getElementById("search-btn").addEventListener("click", () => {
+        const searchTerm = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+
+        if (searchTerm === "") {
+          renderProducts(allProducts);
+          return;
+        }
+
+        const filtered = allProducts.filter(
+          (product) =>
+            product.title.toLowerCase().includes(searchTerm) ||
+            product.author.toLowerCase().includes(searchTerm)
+        );
+
+        renderProducts(filtered);
+      });
+
+      // Finalizar compra
+      document.getElementById("checkout-btn").addEventListener("click", () => {
+        if (cart.length === 0) {
+          alert("Carrinho vazio! Adicione produtos antes de finalizar.");
+          return;
+        }
+
+        const total = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+        alert(
+          `Compra finalizada com sucesso!\nTotal: R$ ${total.toFixed(
+            2
+          )}\n\nObrigado pela preferência!`
+        );
+        cart = [];
+        renderCart();
+      });
+    </script>
+  </body>
+</html>

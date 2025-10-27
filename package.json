@@ -1,0 +1,38 @@
+{
+  "name": "bookstore-app",
+  "version": "1.0.0",
+  "description": "Projeto completo de um e-commerce de livros de uma aplicação web simples para testes automatizados usando WebdriverIO.",
+  "main": "index.js",
+  "scripts": {
+    "test": "wdio run ./wdio.conf.js",
+    "test:login": "wdio run ./wdio.conf.js --spec ./test/specs/login.test.js",
+    "test:cart": "wdio run ./wdio.conf.js --spec ./test/specs/cart.test.js",
+    "test:search": "wdio run ./wdio.conf.js --spec ./test/specs/search.test.js",
+    "test:visual": "wdio run ./wdio.conf.js --spec ./test/specs/visual.test.js",
+    "visual:report": "npx wdio-visual-reporter --jsonOutput=./visual-report/output.json --reportFolder=./visual-report/html",
+    "visual:serve": "npx sirv-cli ./visual-report/html --single",
+    "serve": "npx http-server . -p 8080"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emanuelabreudev/bookstore-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/emanuelabreudev/bookstore-app/issues"
+  },
+  "homepage": "https://github.com/emanuelabreudev/bookstore-app#readme",
+  "devDependencies": {
+    "@wdio/cli": "^9.20.0",
+    "@wdio/local-runner": "^9.20.0",
+    "@wdio/mocha-framework": "^9.20.0",
+    "@wdio/spec-reporter": "^9.20.0",
+    "@wdio/visual-reporter": "^0.4.11",
+    "@wdio/visual-service": "^9.0.0",
+    "chromedriver": "^141.0.5",
+    "wdio-chromedriver-service": "^8.1.1"
+  }
+}
